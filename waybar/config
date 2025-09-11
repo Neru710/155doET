@@ -1,0 +1,49 @@
+{
+    "layer": "top",
+    "position": "top",
+    "modules-left": ["custom/icon", "clock", "cpu", "memory", "temperature"],
+    "modules-center": ["sway/workspaces"],
+    "modules-right": ["tray", "pulseaudio", "network", "custom/off"],
+
+    "custom/icon": {
+        "format": "🌙",
+        "tooltip": false
+    },
+    "clock": {
+        "format": "🕓 {:%H:%M}",
+        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
+        "interval": 60
+    },
+    "cpu": {
+        "format": "🧠 {usage}%",
+        "interval": 5,
+        "format-precision": 0
+    },
+    "memory": {
+        "format": "📊 {}%",
+        "interval": 5
+    },
+    "temperature": {
+        "format": "🌡️ {}°C",
+        "interval": 10,
+        "path": "/sys/class/thermal/thermal_zone0/temp",
+        "max-temperature": 75
+    },
+    "tray": {
+        "icon-size": 16
+    },
+    "pulseaudio": {
+        "format": "🎤 {volume}% / {format_source}",
+        "format-source": "{volume}%",
+        "interval": 2,
+        "on-click": "pavucontrol"
+    },
+    "network": {
+        "format": "🛜 Connected",
+        "interval": 10
+    },
+    "custom/off": {
+        "format": "🚪",
+        "on-click": "wlogout"
+    }
+}
