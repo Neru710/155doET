@@ -165,6 +165,7 @@ AUR_PACKAGES=(
     "papirus-icon-theme"
     "ttf-firacode-nerd" # Fira Code Nerd Font
     "wlogout" # Adicionado wlogout
+    "protonup-qt"
 )
 
 for pkg in "${AUR_PACKAGES[@]}"; do
