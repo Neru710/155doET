@@ -71,6 +71,9 @@ PACKAGES=(
     hyprland # Sway foi substituído por Hyprland
     hyprpaper # Adicionado hyprpaper para wallpaper
     firefox
+    discord
+    lutris
+    qbittorrent
     grim
     nano
     neovim
