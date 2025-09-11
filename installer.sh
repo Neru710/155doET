@@ -72,10 +72,18 @@ PACKAGES=(
     hyprpaper # Adicionado hyprpaper para wallpaper
     firefox
     grim
+    nano
+    neovim
     swappy
     slurp
     wl-clipboard
     flatpak
+    xdg-desktop-portal
+    xdg-desktop-portal-gtk
+    gst-plugins-good
+    gst-plugins-bad
+    gst-plugins-ugly
+    gst-libav
     waybar
     pavucontrol
     cava
