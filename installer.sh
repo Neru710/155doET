@@ -118,7 +118,6 @@ PACKAGES=(
     xorg-xwayland # Adicionado para compatibilidade com aplicativos X11
     xdg-user-dirs # Para criar os diretórios padrão do usuário
     xdg-desktop-portal # XDG Desktop Portal principal
-    xdg-desktop-portal-hyprland-git # Backend para Hyprland (substitui xdg-desktop-portal-wlr)
     mpv # Adicionado MPV Player
     curl # Necessário para baixar o script de instalação do Oh My Zsh
 )
