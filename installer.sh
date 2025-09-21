@@ -68,11 +68,13 @@ log_message "Sistema atualizado com sucesso."
 # 3. Instalar pacotes necessários (do repositório oficial)
 PACKAGES=(
     wayland
-    hyprland # Sway foi substituído por Hyprland
-    hyprpaper # Adicionado hyprpaper para wallpaper
+    hyprland
+    hyprpaper
     firefox
     discord
+    steam
     lutris
+    wine-staging
     qbittorrent
     grim
     nano
