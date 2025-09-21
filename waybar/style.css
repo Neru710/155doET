@@ -1,18 +1,11 @@
-/*
- * Style Monocromático Refinado para Waybar
- * Autor: Gemini
- * Data: 25/08/2025
- */
-
 /* --- BARRA PRINCIPAL --- */
 #waybar {
-    background-color: rgba(28, 28, 38, 0.6); /* Fundo grafite semitransparente e levemente azulado */
+    background-color: rgba(0, 0, 0, 0);
     color: #DCE0E8; /* Texto principal em um tom de branco suave */
     font-family: 'Fira Code', 'JetBrainsMono Nerd Font', monospace;
     font-size: 12px;
     border-radius: 12px;
     margin: 8px;
-    border: 1px solid rgba(205, 214, 244, 0.1); /* Borda sutil para definir os limites */
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); /* Sombra mais suave */
 }
 
@@ -54,25 +47,30 @@
 /* --- WORKSPACES --- */
 #workspaces {
     background: none;
-    margin: 0 8px; /* Espaçamento do grupo central */
+    margin: 0 8px;
 }
 
+/* Botões normais (inativos) */
 #workspaces button {
-    color: #81A1C1; /* Cor para workspaces inativos (um azul suave) */
+    color: #81A1C1;          /* azul suave */
+    background: transparent; /* sem fundo */
+    font-weight: 500;
+    padding: 0 8px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+/* Workspace ativo */
+#workspaces button.active {
+    background: #ECEFF4;  /* fundo claro */
+    color: #2E3440;       /* texto escuro pra contraste */
     font-weight: bold;
-    padding: 0 8px; /* Padding um pouco menor para caber mais workspaces se necessário */
 }
 
-#workspaces button.focused {
-    background-color: #ECEFF4; /* Fundo branco-gelo para o workspace ativo */
-    color: #2E3440;           /* Texto escuro para contraste máximo */
-    border-radius: 8px; /* Arredonda apenas o workspace ativo, criando um efeito "pílula" */
-}
-
+/* Workspace urgente */
 #workspaces button.urgent {
-    background-color: #BF616A; /* Cor de destaque para urgência (vermelho suave) */
+    background: #BF616A;  /* vermelho suave */
     color: #ECEFF4;
-    border-radius: 8px;
 }
 
 /* --- AGRUPAMENTO E BORDAS DOS MÓDULOS --- */

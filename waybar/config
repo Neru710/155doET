@@ -2,7 +2,7 @@
     "layer": "top",
     "position": "top",
     "modules-left": ["custom/icon", "clock", "cpu", "memory", "temperature"],
-    "modules-center": ["sway/workspaces"],
+    "modules-center": ["hyprland/workspaces"],
     "modules-right": ["tray", "pulseaudio", "network", "custom/off"],
 
     "custom/icon": {
