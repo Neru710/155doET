@@ -72,7 +72,6 @@ PACKAGES=(
     hyprpaper
     firefox
     discord
-    steam
     lutris
     wine-staging
     qbittorrent
@@ -80,11 +79,10 @@ PACKAGES=(
     nano
     neovim
     swappy
-    slurp
-    wl-clipboard
     flatpak
     xdg-desktop-portal
     xdg-desktop-portal-gtk
+    xdg-desktop-portal-wlr
     gst-plugins-good
     gst-plugins-bad
     gst-plugins-ugly
@@ -130,7 +128,6 @@ PACKAGES=(
     base-devel # Essencial para compilar pacotes do AUR (como o yay)
     xorg-xwayland # Adicionado para compatibilidade com aplicativos X11
     xdg-user-dirs # Para criar os diretórios padrão do usuário
-    xdg-desktop-portal # XDG Desktop Portal principal
     mpv # Adicionado MPV Player
     curl # Necessário para baixar o script de instalação do Oh My Zsh
 )
@@ -167,7 +164,6 @@ AUR_PACKAGES=(
     "papirus-icon-theme"
     "ttf-firacode-nerd" # Fira Code Nerd Font
     "wlogout" # Adicionado wlogout
-    "protonup-qt"
 )
 
 for pkg in "${AUR_PACKAGES[@]}"; do
@@ -227,7 +223,6 @@ copy_dotfiles "$DOTFILES_LOCAL_PATH/hypr" "$HOME/.config/hypr" "hyprland" # Subs
 copy_dotfiles "$DOTFILES_LOCAL_PATH/waybar" "$HOME/.config/waybar" "waybar"
 copy_dotfiles "$DOTFILES_LOCAL_PATH/wlogout" "$HOME/.config/wlogout" "wlogout"
 copy_dotfiles "$DOTFILES_LOCAL_PATH/rofi" "$HOME/.config/rofi" "rofi"
-copy_dotfiles "$DOTFILES_LOCAL_PATH/nvim" "$HOME/.config/nvim" "nvim"
 
 # Copiar .zshrc do repositório de dotfiles para $HOME/
 log_message "Copiando/Atualizando .zshrc do repositório de dotfiles para $HOME/..."
