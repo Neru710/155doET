@@ -1,36 +1,36 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-# installer.sh - Script de Instalação/Atualização para Arch Linux (Hyprland, Waybar, Dotfiles, Fontes, Yay, Xwayland, XDG Portal e Diretórios de Usuário)
+# installer.sh - Script de Instalação/Atualização para Arch Linux
+# (Hyprland, Waybar, Dotfiles, Fontes, Yay, Xwayland, XDG Portal e Diretórios de Usuário)
 
 # --- Variáveis de Configuração ---
 PROJECT_NAME="Configurações Hyprland/Waybar"
-DOTFILES_REPO="https://github.com/Neru710/155doET.git" # ATENÇÃO: Verifique se este repositório contém as configurações para Hyprland!
-INSTALL_DIR="$HOME/.$PROJECT_NAME_temp" # Diretório temporário para clonar o dotfile e o yay
-DOTFILES_LOCAL_PATH="$INSTALL_DIR/dotfiles" # Caminho onde os dotfiles serão clonados temporariamente
-LOG_FILE="/tmp/${PROJECT_NAME// /_}_install.log" # Arquivo de log temporário
+DOTFILES_REPO="https://github.com/Neru710/155doET.git"   # Repositório de dotfiles
+INSTALL_DIR="$HOME/.${PROJECT_NAME// /_}_temp"
+DOTFILES_LOCAL_PATH="$INSTALL_DIR/dotfiles"
 
 # --- Funções Auxiliares ---
 
-# Função para exibir mensagens de status
+# Exibir mensagens de status
 log_message() {
-    echo "$(date '+%Y-%m-%d %H:%M:%S') - $1" | tee -a "$LOG_FILE"
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - $1"
 }
 
-# Função para exibir erros e sair
+# Exibir erro e sair
 error_exit() {
-    log_message "ERRO: $1"
+    echo "ERRO: $1"
     echo "----------------------------------------------------"
-    echo "A instalação/atualização falhou. Verifique o log em: $LOG_FILE"
+    echo "A instalação/atualização falhou."
     echo "----------------------------------------------------"
     exit 1
 }
 
-# Função para verificar se um comando existe
+# Verificar se um comando existe
 command_exists() {
     command -v "$1" >/dev/null 2>&1
 }
 
-# Função para copiar e atualizar os dotfiles (diretórios)
+# Copiar e atualizar diretórios de configuração
 copy_dotfiles() {
     local source_dir="$1"
     local dest_dir="$2"
@@ -38,319 +38,224 @@ copy_dotfiles() {
 
     log_message "Copiando/Atualizando $item_name para $dest_dir..."
     if [ -d "$source_dir" ]; then
-        # Remove o diretório de destino se ele já existir para garantir uma cópia limpa e completa
         if [ -d "$dest_dir" ]; then
             log_message "Removendo $dest_dir existente antes de copiar..."
             rm -rf "$dest_dir" || error_exit "Falha ao remover $dest_dir."
         fi
         cp -r "$source_dir" "$dest_dir" || error_exit "Falha ao copiar a pasta '$item_name'."
-        log_message "Pasta '$item_name' copiada/atualizada para $HOME/.config/."
+        log_message "Pasta '$item_name' copiada/atualizada."
     else
-        log_message "Aviso: Pasta '$item_name' não encontrada no repositório clonado ($source_dir). Pulando cópia."
+        log_message "Aviso: Pasta '$item_name' não encontrada em $source_dir. Pulando."
     fi
 }
 
-# --- Início do Script de Instalação/Atualização ---
+# --- Início do Script ---
 log_message "Iniciando instalação/atualização de $PROJECT_NAME..."
-echo "Log da instalação/atualização será salvo em: $LOG_FILE"
 
-# 1. Verificar se o pacman existe (garantir que é Arch)
-log_message "Verificando se o gerenciador de pacotes pacman está disponível..."
-if ! command_exists "pacman"; then
+# 1. Checar pacman (Arch Linux)
+log_message "Verificando pacman..."
+if ! command_exists pacman; then
     error_exit "Este script é para Arch Linux e o pacman não foi encontrado."
 fi
 
 # 2. Atualizar o sistema
-log_message "Atualizando o sistema Arch Linux..."
+log_message "Atualizando sistema..."
 sudo pacman -Syu --noconfirm || error_exit "Falha ao atualizar o sistema."
-log_message "Sistema atualizado com sucesso."
+log_message "Sistema atualizado."
 
-# 3. Instalar pacotes necessários (do repositório oficial)
+# 3. Instalar pacotes oficiais
 PACKAGES=(
-    wayland
-    hyprland
-    hyprpaper
-    firefox
-    discord
-    lutris
-    wine-staging
-    qbittorrent
-    grim
-    nano
-    neovim
-    swappy
-    flatpak
-    xdg-desktop-portal
-    xdg-desktop-portal-gtk
-    xdg-desktop-portal-wlr
-    gst-plugins-good
-    gst-plugins-bad
-    gst-plugins-ugly
-    gst-libav
-    waybar
-    pavucontrol
-    cava
-    mako
-    sddm
-    thunar
-    engrampa
-    unzip
-    tar
-    unrar
-    rofi
-    kitty
-    btop
-    zsh # Garante que o zsh esteja instalado
-    lxappearance
-    qt5ct
-    qt6ct
-    kvantum-qt5
-    git # Garante que o git esteja instalado para clonar o repositório e o yay
-    # Início das fontes adicionadas
-    ttf-dejavu
-    ttf-liberation
-    ttf-roboto
-    ttf-ubuntu-font-family
-    ttf-fira-code
-    ttf-jetbrains-mono
-    noto-fonts
-    noto-fonts-cjk
-    noto-fonts-emoji 
-    ttf-droid
-    ttf-inconsolata
-    ttf-cascadia-code
-    ttf-hack
-    ttf-hack-nerd
-    ttf-fira-sans
-    ttf-nerd-fonts-symbols
-    ttf-font-awesome
-    # Fim das fontes adicionadas
-    base-devel # Essencial para compilar pacotes do AUR (como o yay)
-    xorg-xwayland # Adicionado para compatibilidade com aplicativos X11
-    xdg-user-dirs # Para criar os diretórios padrão do usuário
-    mpv # Adicionado MPV Player
-    curl # Necessário para baixar o script de instalação do Oh My Zsh
+    wayland hyprland hyprpaper firefox discord lutris wine-staging
+    qbittorrent grim nano neovim flatpak flameshot
+    xdg-desktop-portal xdg-desktop-portal-gtk xdg-desktop-portal-wlr
+    gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav
+    waybar pavucontrol cava mako sddm thunar engrampa unzip tar unrar
+    rofi kitty btop zsh lxappearance qt5ct qt6ct kvantum-qt5 git
+    ttf-dejavu ttf-liberation ttf-roboto ttf-ubuntu-font-family
+    ttf-fira-code ttf-jetbrains-mono noto-fonts noto-fonts-cjk
+    noto-fonts-emoji ttf-droid ttf-inconsolata ttf-cascadia-code
+    ttf-hack ttf-hack-nerd ttf-fira-sans ttf-nerd-fonts-symbols
+    ttf-font-awesome base-devel xorg-xwayland xdg-user-dirs mpv curl
 )
 
-log_message "Instalando pacotes necessários: ${PACKAGES[*]}..."
-sudo pacman -S --noconfirm --needed "${PACKAGES[@]}" || error_exit "Falha ao instalar um ou mais pacotes."
-log_message "Pacotes instalados com sucesso."
+log_message "Instalando pacotes oficiais..."
+sudo pacman -S --noconfirm --needed "${PACKAGES[@]}" \
+    || error_exit "Falha ao instalar pacotes oficiais."
+log_message "Pacotes instalados."
 
-# 4. Instalar Yay (se não estiver instalado)
-log_message "Verificando e instalando o Yay (AUR helper)..."
-if ! command_exists "yay"; then
-    log_message "Yay não encontrado. Clonando e instalando yay..."
-    git clone https://aur.archlinux.org/yay.git "$INSTALL_DIR/yay-build" || error_exit "Falha ao clonar o repositório do yay."
-    (cd "$INSTALL_DIR/yay-build" && makepkg -si --noconfirm) || error_exit "Falha ao compilar e instalar o yay."
-    log_message "Yay instalado com sucesso."
+# 4. Instalar yay
+log_message "Verificando yay..."
+if ! command_exists yay; then
+    log_message "Clonando e instalando yay..."
+    git clone https://aur.archlinux.org/yay.git "$INSTALL_DIR/yay-build" \
+        || error_exit "Falha ao clonar yay."
+    (cd "$INSTALL_DIR/yay-build" && makepkg -si --noconfirm) \
+        || error_exit "Falha ao instalar yay."
+    log_message "Yay instalado."
 else
-    log_message "Yay já está instalado. Pulando instalação."
+    log_message "Yay já instalado."
 fi
 
-# 4-2. Instalar os temas para gtk e o qt5 e 6 (pacotes AUR)
+# 4.2 Instalar temas AUR
 install_aur_package() {
-    local PACKAGE_NAME="$1"
-    log_message "Instalando/Atualizando o pacote AUR ($PACKAGE_NAME) usando yay..."
-    yay -S --noconfirm --needed "$PACKAGE_NAME" || error_exit "Falha ao instalar/atualizar o pacote AUR ($PACKAGE_NAME)."
-    log_message "Pacote AUR ($PACKAGE_NAME) instalado/atualizado com sucesso."
+    local pkg="$1"
+    log_message "Instalando AUR: $pkg"
+    yay -S --noconfirm --needed "$pkg" \
+        || error_exit "Falha ao instalar AUR: $pkg"
 }
 
 AUR_PACKAGES=(
-    "catppuccin-gtk-theme"
-    "dracula-gtk-theme"
-    "nordic-theme"
-    "materia-gtk-theme"
-    "arc-gtk-theme"
-    "papirus-icon-theme"
-    "ttf-firacode-nerd" # Fira Code Nerd Font
-    "wlogout" # Adicionado wlogout
+    catppuccin-gtk-theme dracula-gtk-theme nordic-theme materia-gtk-theme
+    arc-gtk-theme papirus-icon-theme ttf-firacode-nerd wlogout
 )
 
 for pkg in "${AUR_PACKAGES[@]}"; do
     install_aur_package "$pkg"
 done
 
-# 5. Instalar Oh My Zsh e configurar shell padrão
-log_message "Verificando e instalando Oh My Zsh..."
+# 5. Oh My Zsh e shell padrão
+log_message "Instalando Oh My Zsh..."
 if [ ! -d "$HOME/.oh-my-zsh" ]; then
-    # O --unattended evita prompts interativos e define o zsh como shell padrão
-    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended || error_exit "Falha ao instalar o Oh My Zsh."
-    log_message "Oh My Zsh instalado com sucesso."
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" \
+        "" --unattended || error_exit "Falha ao instalar Oh My Zsh."
+    log_message "Oh My Zsh instalado."
 else
-    log_message "Oh My Zsh já está instalado. Pulando instalação."
+    log_message "Oh My Zsh já existe."
 fi
 
-# Mudar o shell padrão para Zsh (se ainda não for)
-log_message "Definindo Zsh como shell padrão do usuário..."
 ZSH_PATH=$(which zsh)
 if [ "$SHELL" != "$ZSH_PATH" ]; then
-    chsh -s "$ZSH_PATH" || error_exit "Falha ao mudar o shell padrão para Zsh."
-    log_message "Shell padrão alterado para Zsh: $ZSH_PATH."
+    chsh -s "$ZSH_PATH" || error_exit "Falha ao alterar shell padrão."
+    log_message "Shell padrão alterado para zsh."
 else
-    log_message "Zsh já é o shell padrão. Pulando alteração."
+    log_message "Zsh já é shell padrão."
 fi
 
-
-# 6. Clonar ou Atualizar o repositório de dotfiles
-log_message "Verificando/Atualizando o repositório de dotfiles: $DOTFILES_REPO..."
-
-# Cria o diretório temporário se não existir
-mkdir -p "$INSTALL_DIR" || error_exit "Não foi possível criar o diretório temporário: $INSTALL_DIR."
+# 6. Dotfiles
+log_message "Clonando/atualizando dotfiles: $DOTFILES_REPO"
+mkdir -p "$INSTALL_DIR" || error_exit "Não foi possível criar $INSTALL_DIR."
 
 if [ -d "$DOTFILES_LOCAL_PATH" ]; then
-    log_message "Repositório de dotfiles já existe localmente. Puxando as últimas alterações..."
-    (cd "$DOTFILES_LOCAL_PATH" && git pull) || error_exit "Falha ao puxar as últimas alterações do repositório de dotfiles."
-    log_message "Repositório de dotfiles atualizado com sucesso."
+    (cd "$DOTFILES_LOCAL_PATH" && git pull) \
+        || error_exit "Falha ao atualizar dotfiles."
+    log_message "Dotfiles atualizados."
 else
-    log_message "Clonando o repositório de dotfiles: $DOTFILES_REPO para $DOTFILES_LOCAL_PATH"
-    git clone "$DOTFILES_REPO" "$DOTFILES_LOCAL_PATH" || error_exit "Falha ao clonar o repositório de dotfiles."
-    log_message "Repositório de dotfiles clonado com sucesso."
+    git clone "$DOTFILES_REPO" "$DOTFILES_LOCAL_PATH" \
+        || error_exit "Falha ao clonar dotfiles."
+    log_message "Dotfiles clonados."
 fi
 
-# 7. Criar diretórios padrão do usuário
-log_message "Verificando e criando diretórios padrão do usuário (Downloads, Documentos, etc.)..."
-xdg-user-dirs-update || log_message "Aviso: Falha ao criar/atualizar diretórios do usuário com xdg-user-dirs-update."
-log_message "Diretórios padrão do usuário verificados/criados."
+# 7. Diretórios padrão do usuário
+log_message "Criando diretórios padrão..."
+xdg-user-dirs-update || log_message "Aviso: xdg-user-dirs-update falhou."
+log_message "Diretórios verificados."
 
-# 8. Copiar/Atualizar configurações de Hyprland, Waybar, wlogout e .zshrc
-log_message "Copiando/Atualizando configurações de hyprland, waybar, wlogout e .zshrc para ~/.config/ e $HOME/..."
+# 8. Copiar configurações
+log_message "Copiando configurações Hyprland, Waybar, wlogout e rofi..."
+mkdir -p "$HOME/.config"
 
-# Cria o diretório .config se não existir
-mkdir -p "$HOME/.config/" || error_exit "Não foi possível criar o diretório $HOME/.config/."
+copy_dotfiles "$DOTFILES_LOCAL_PATH/hypr" "$HOME/.config/hypr" hyprland
+copy_dotfiles "$DOTFILES_LOCAL_PATH/waybar" "$HOME/.config/waybar" waybar
+copy_dotfiles "$DOTFILES_LOCAL_PATH/wlogout" "$HOME/.config/wlogout" wlogout
+copy_dotfiles "$DOTFILES_LOCAL_PATH/rofi" "$HOME/.config/rofi" rofi
+copy_dotfiles "$DOTFILES_LOCAL_PATH/flameshot" "$HOME/.config/flameshot" flameshot
+copy_dotfiles "$DOTFILES_LOCAL_PATH/gtk-3.0" "$HOME/.config/gtk-3.0" gtk-3.0
+copy_dotfiles "$DOTFILES_LOCAL_PATH/gtk-4.0" "$HOME/.config/gtk-4.0" gtk-4.0
 
-# Usando a função copy_dotfiles para simplificar e garantir atualização (para diretórios)
-copy_dotfiles "$DOTFILES_LOCAL_PATH/hypr" "$HOME/.config/hypr" "hyprland" # Substituído 'sway' por 'hypr'
-copy_dotfiles "$DOTFILES_LOCAL_PATH/waybar" "$HOME/.config/waybar" "waybar"
-copy_dotfiles "$DOTFILES_LOCAL_PATH/wlogout" "$HOME/.config/wlogout" "wlogout"
-copy_dotfiles "$DOTFILES_LOCAL_PATH/rofi" "$HOME/.config/rofi" "rofi"
-
-# Copiar .zshrc do repositório de dotfiles para $HOME/
-log_message "Copiando/Atualizando .zshrc do repositório de dotfiles para $HOME/..."
+log_message "Atualizando .zshrc..."
 if [ -f "$DOTFILES_LOCAL_PATH/.zshrc" ]; then
-    cp -f "$DOTFILES_LOCAL_PATH/.zshrc" "$HOME/.zshrc" || error_exit "Falha ao copiar o arquivo .zshrc."
-    log_message ".zshrc copiado/atualizado para $HOME/."
+    cp -f "$DOTFILES_LOCAL_PATH/.zshrc" "$HOME/.zshrc" \
+        || error_exit "Falha ao copiar .zshrc."
+    log_message ".zshrc atualizado."
 else
-    log_message "Aviso: Arquivo .zshrc não encontrado no repositório clonado ($DOTFILES_LOCAL_PATH/.zshrc). Pulando cópia."
+    log_message "Aviso: .zshrc não encontrado nos dotfiles."
 fi
 
-# Instalar plugins Zsh (clonar repositórios)
-log_message "Clonando plugins Zsh (zsh-autosuggestions, zsh-syntax-highlighting)..."
+# Plugins Zsh
+log_message "Instalando plugins Zsh..."
 ZSH_CUSTOM_PLUGINS="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins"
-mkdir -p "$ZSH_CUSTOM_PLUGINS" # Garante que o diretório exista
+mkdir -p "$ZSH_CUSTOM_PLUGINS"
 
 if [ ! -d "$ZSH_CUSTOM_PLUGINS/zsh-autosuggestions" ]; then
-    git clone https://github.com/zsh-users/zsh-autosuggestions "$ZSH_CUSTOM_PLUGINS/zsh-autosuggestions" || log_message "Aviso: Falha ao clonar zsh-autosuggestions."
-else
-    log_message "zsh-autosuggestions já clonado. Pulando."
+    git clone https://github.com/zsh-users/zsh-autosuggestions "$ZSH_CUSTOM_PLUGINS/zsh-autosuggestions" \
+        || log_message "Aviso: falha ao clonar zsh-autosuggestions."
 fi
 
 if [ ! -d "$ZSH_CUSTOM_PLUGINS/zsh-syntax-highlighting" ]; then
-    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "$ZSH_CUSTOM_PLUGINS/zsh-syntax-highlighting" || log_message "Aviso: Falha ao clonar zsh-syntax-highlighting."
-else
-    log_message "zsh-syntax-highlighting já clonado. Pulando."
-fi
-log_message "Clonagem de plugins Zsh concluída."
-
-# Configurar plugins Zsh no ~/.zshrc (garante que os plugins estejam listados)
-log_message "Configurando plugins Zsh no ~/.zshrc..."
-if [ -f "$HOME/.zshrc" ]; then
-    # Garante que a linha 'plugins=(...)' exista e contenha os plugins desejados.
-    # Primeiro, remove qualquer linha 'plugins=(...)' existente.
-    sed -i '/^plugins=(/d' "$HOME/.zshrc"
-    # Em seguida, adiciona a linha com os plugins desejados no final do arquivo.
-    echo "plugins=(git zsh-autosuggestions zsh-syntax-highlighting)" >> "$HOME/.zshrc" || log_message "Aviso: Falha ao adicionar/atualizar a linha de plugins Zsh no ~/.zshrc. Verifique manualmente."
-    log_message "Plugins Zsh configurados com sucesso no ~/.zshrc."
-else
-    log_message "Aviso: ~/.zshrc não encontrado após cópia. Pule a configuração de plugins Zsh."
+    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "$ZSH_CUSTOM_PLUGINS/zsh-syntax-highlighting" \
+        || log_message "Aviso: falha ao clonar zsh-syntax-highlighting."
 fi
 
-# Garante permissão de execução para scripts específicos após a cópia
+sed -i '/^plugins=(/d' "$HOME/.zshrc"
+echo "plugins=(git zsh-autosuggestions zsh-syntax-highlighting)" >> "$HOME/.zshrc" \
+    || log_message "Aviso: falha ao atualizar plugins no .zshrc."
+log_message "Plugins Zsh configurados."
+
+# Tornar scripts executáveis
 SCRIPTS_TO_CHMOD=(
     "$HOME/.config/waybar/scripts/power-menu.sh"
-    "$HOME/.config/hypr/scripts/screenshot.sh" # Caminho do script de screenshot para Hyprland (ajustado)
-    # Adicione outros scripts que precisam de permissão de execução aqui
+    "$HOME/.config/hypr/scripts/screenshot.sh"
 )
 
 for script in "${SCRIPTS_TO_CHMOD[@]}"; do
     if [ -f "$script" ]; then
-        log_message "Dando permissão de execução para o script $script..."
-        chmod +x "$script" || error_exit "Falha ao dar permissão de execução para $script."
-        log_message "Permissão de execução concedida para $script."
+        chmod +x "$script" || error_exit "Falha ao chmod em $script."
+        log_message "Permissão concedida: $script"
     else
-        log_message "Aviso: Script $script não encontrado após a cópia. Certifique-se de que ele está no seu repositório dotfiles."
+        log_message "Aviso: script não encontrado: $script"
     fi
 done
 
-# 9. Habilitar o SDDM (apenas se ainda não estiver habilitado)
-log_message "Verificando e habilitando o serviço SDDM para iniciar com o sistema..."
+# 9. Habilitar SDDM
+log_message "Habilitando SDDM..."
 if ! systemctl is-enabled sddm &> /dev/null; then
-    sudo systemctl enable sddm || error_exit "Falha ao habilitar o serviço SDDM."
-    log_message "SDDM habilitado com sucesso."
+    sudo systemctl enable sddm || error_exit "Falha ao habilitar SDDM."
+    log_message "SDDM habilitado."
 else
-    log_message "SDDM já está habilitado. Pulando habilitação."
+    log_message "SDDM já habilitado."
 fi
 
-# 10. Configurar WAYLAND_DISPLAY e XDG_CURRENT_DESKTOP em ~/.config/environment.d/
-log_message "Configurando variáveis de ambiente em ~/.config/environment.d/..."
+# 10. Variáveis de ambiente para Wayland e Hyprland
+log_message "Configurando variáveis de ambiente..."
 ENV_D_DIR="$HOME/.config/environment.d"
-mkdir -p "$ENV_D_DIR" || error_exit "Falha ao criar o diretório $ENV_D_DIR."
+mkdir -p "$ENV_D_DIR" || error_exit "Falha ao criar $ENV_D_DIR."
 
-# Configura WAYLAND_DISPLAY
+# WAYLAND_DISPLAY
 WAYLAND_ENV_FILE="$ENV_D_DIR/wayland.conf"
-WAYLAND_DISPLAY_VALUE="${WAYLAND_DISPLAY:-wayland-0}" 
-
-# Remove qualquer linha WAYLAND_DISPLAY= existente para evitar duplicatas ou conflitos
 sed -i '/^WAYLAND_DISPLAY=/d' "$WAYLAND_ENV_FILE" 2>/dev/null
-echo "WAYLAND_DISPLAY=${WAYLAND_DISPLAY_VALUE}" >> "$WAYLAND_ENV_FILE" || error_exit "Falha ao adicionar WAYLAND_DISPLAY a $WAYLAND_ENV_FILE."
-log_message "WAYLAND_DISPLAY=${WAYLAND_DISPLAY_VALUE} adicionado a $WAYLAND_ENV_FILE com sucesso."
+echo "WAYLAND_DISPLAY=${WAYLAND_DISPLAY:-wayland-0}" >> "$WAYLAND_ENV_FILE"
 
-# Configura XDG_CURRENT_DESKTOP
+# XDG_CURRENT_DESKTOP
 DESKTOP_ENV_FILE="$ENV_D_DIR/desktop.conf"
-# Remove qualquer linha XDG_CURRENT_DESKTOP= existente
 sed -i '/^XDG_CURRENT_DESKTOP=/d' "$DESKTOP_ENV_FILE" 2>/dev/null
-echo "XDG_CURRENT_DESKTOP=Hyprland" >> "$DESKTOP_ENV_FILE" || error_exit "Falha ao adicionar XDG_CURRENT_DESKTOP."
-log_message "XDG_CURRENT_DESKTOP=Hyprland adicionado a $DESKTOP_ENV_FILE com sucesso."
+echo "XDG_CURRENT_DESKTOP=Hyprland" >> "$DESKTOP_ENV_FILE"
 
-
-# 11. Configurar QT_QPA_PLATFORMTHEME em /etc/environment
-log_message "Configurando QT_QPA_PLATFORMTHEME para qt5ct em /etc/environment..."
-ENV_VAR_LINE="QT_QPA_PLATFORMTHEME=qt5ct"
+# 11. Configurar QT_QPA_PLATFORMTHEME
+log_message "Configurando QT_QPA_PLATFORMTHEME..."
 GLOBAL_ENV_FILE="/etc/environment"
-
-# Verifica se existe alguma linha começando com QT_QPA_PLATFORMTHEME e a remove para evitar duplicatas ou conflitos
 sudo sed -i '/^QT_QPA_PLATFORMTHEME=/d' "$GLOBAL_ENV_FILE" 2>/dev/null
-# Adiciona a nova linha ao final do arquivo
-echo "$ENV_VAR_LINE" | sudo tee -a "$GLOBAL_ENV_FILE" > /dev/null || error_exit "Falha ao adicionar '$ENV_VAR_LINE' a $GLOBAL_ENV_FILE."
-log_message "'$ENV_VAR_LINE' adicionado a $GLOBAL_ENV_FILE com sucesso."
+echo "QT_QPA_PLATFORMTHEME=qt5ct" | sudo tee -a "$GLOBAL_ENV_FILE" > /dev/null
 
-# 12. Limpar o diretório temporário
-log_message "Removendo diretório temporário: $INSTALL_DIR"
-rm -rf "$INSTALL_DIR" || log_message "Aviso: Não foi possível remover o diretório temporário $INSTALL_DIR."
+# 12. Limpar temporários
+log_message "Removendo $INSTALL_DIR..."
+rm -rf "$INSTALL_DIR" || log_message "Aviso: não foi possível remover $INSTALL_DIR."
 
 # --- Finalização ---
-log_message "Instalação/Configuração/Atualização de $PROJECT_NAME concluídas com sucesso!"
-echo ""
+log_message "Instalação/atualização de $PROJECT_NAME concluída com sucesso!"
 echo "----------------------------------------------------"
-echo "Instalação/Atualização Concluída!"
-echo "Os diretórios padrão do usuário foram criados/verificados."
-echo "O XDG Desktop Portal para Hyprland foi instalado."
-echo "Os dotfiles foram clonados/atualizados."
-echo "O Zsh e Oh My Zsh foram instalados e configurados."
-echo "Você precisa REINICIAR o sistema agora para que as alterações entrem em vigor,"
-echo "e o SDDM inicie permitindo que você selecione a sessão Hyprland."
-echo "O log completo da instalação/atualização está em: $LOG_FILE"
+echo "Instalação/atualização concluída!"
+echo "Reinicie o sistema para aplicar todas as alterações."
 echo "----------------------------------------------------"
-echo ""
 
-# Recomendação de Reinício Mais Forte
-echo "Deseja reiniciar o sistema agora? (s/N): "
-read -p "" -n 1 -r
+# Pergunta para reiniciar
+read -p "Deseja reiniciar agora? (s/N): " -n 1 -r
 echo
 if [[ $REPLY =~ ^[Ss]$ ]]; then
-    log_message "Reiniciando o sistema..."
+    log_message "Reiniciando sistema..."
     sudo reboot
 else
     log_message "Reinício adiado pelo usuário."
 fi
 
 exit 0
+
