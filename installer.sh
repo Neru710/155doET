@@ -70,7 +70,8 @@ PACKAGES=(
     grim nano neovim flatpak flameshot
     xdg-desktop-portal xdg-desktop-portal-gtk xdg-desktop-portal-wlr
     gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav
-    waybar pavucontrol cava mako sddm thunar engrampa unzip tar unrar
+    waybar pavucontrol cava mako sddm thunar gvfs gvfs-mtp
+    gvfs-afc udisks2 udiskieengrampa unzip tar unrar
     rofi kitty starship btop zsh lxappearance qt5ct qt6ct kvantum-qt5 git
     ttf-dejavu ttf-liberation ttf-roboto ttf-ubuntu-font-family
     ttf-fira-code ttf-jetbrains-mono noto-fonts noto-fonts-cjk
@@ -148,6 +149,12 @@ log_message "Diretórios verificados."
 log_message "Copiando configurações Hyprland, Waybar, wlogout e rofi..."
 mkdir -p "$HOME/.config"
 
+# Configurações do terminal
+copy_dotfiles "$DOTFILES_LOCAL_PATH/starship.toml" "$HOME/.config/starship.toml" starship.toml
+copy_dotfiles "$DOTFILES_LOCAL_PATH/.zshrc" "$HOME/.zshrc" zshrc
+copy_dotfiles "$DOTFILES_LOCAL_PATH/fastfetch" "$HOME/.config/fastfetch" fastfetch
+
+# Configurações do ambiente gráfico
 copy_dotfiles "$DOTFILES_LOCAL_PATH/hypr" "$HOME/.config/hypr" hyprland
 copy_dotfiles "$DOTFILES_LOCAL_PATH/waybar" "$HOME/.config/waybar" waybar
 copy_dotfiles "$DOTFILES_LOCAL_PATH/wlogout" "$HOME/.config/wlogout" wlogout
