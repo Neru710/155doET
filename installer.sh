@@ -66,11 +66,12 @@ log_message "Sistema atualizado."
 # 3. Instalar pacotes oficiais
 PACKAGES=(
     wayland hyprland hyprpaper firefox discord lutris wine-staging
-    qbittorrent grim nano neovim flatpak flameshot
+    qbittorrent networkmanager network-manager-applet 
+    grim nano neovim flatpak flameshot
     xdg-desktop-portal xdg-desktop-portal-gtk xdg-desktop-portal-wlr
     gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav
     waybar pavucontrol cava mako sddm thunar engrampa unzip tar unrar
-    rofi kitty btop zsh lxappearance qt5ct qt6ct kvantum-qt5 git
+    rofi kitty starship btop zsh lxappearance qt5ct qt6ct kvantum-qt5 git
     ttf-dejavu ttf-liberation ttf-roboto ttf-ubuntu-font-family
     ttf-fira-code ttf-jetbrains-mono noto-fonts noto-fonts-cjk
     noto-fonts-emoji ttf-droid ttf-inconsolata ttf-cascadia-code
@@ -113,16 +114,7 @@ for pkg in "${AUR_PACKAGES[@]}"; do
     install_aur_package "$pkg"
 done
 
-# 5. Oh My Zsh e shell padrão
-log_message "Instalando Oh My Zsh..."
-if [ ! -d "$HOME/.oh-my-zsh" ]; then
-    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" \
-        "" --unattended || error_exit "Falha ao instalar Oh My Zsh."
-    log_message "Oh My Zsh instalado."
-else
-    log_message "Oh My Zsh já existe."
-fi
-
+# 5. Starship e shell padrão
 ZSH_PATH=$(which zsh)
 if [ "$SHELL" != "$ZSH_PATH" ]; then
     chsh -s "$ZSH_PATH" || error_exit "Falha ao alterar shell padrão."
@@ -130,6 +122,8 @@ if [ "$SHELL" != "$ZSH_PATH" ]; then
 else
     log_message "Zsh já é shell padrão."
 fi
+
+eval "$(starship init zsh)"
 
 # 6. Dotfiles
 log_message "Clonando/atualizando dotfiles: $DOTFILES_REPO"
