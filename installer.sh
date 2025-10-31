@@ -71,7 +71,7 @@ PACKAGES=(
     xdg-desktop-portal xdg-desktop-portal-gtk xdg-desktop-portal-wlr
     gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav
     waybar pavucontrol cava mako sddm thunar gvfs gvfs-mtp
-    gvfs-afc udisks2 udiskieengrampa unzip tar unrar
+    gvfs-afc udisks2 udiskie engrampa unzip tar unrar
     rofi kitty starship btop zsh lxappearance qt5ct qt6ct kvantum-qt5 git
     ttf-dejavu ttf-liberation ttf-roboto ttf-ubuntu-font-family
     ttf-fira-code ttf-jetbrains-mono noto-fonts noto-fonts-cjk
